@@ -17,15 +17,16 @@ def preprocess(filename):
 		text = removeHashTag(text)
 		return text
 
-	with open(filename, 'rb') as csvfile:
-		rows = csv.reader(csvfile, delimiter=',', quotechar='"')
-		line = 0
-		for row in rows:
-			line += 1
-			if line == 1:
-				continue
-			print preprocessText(row[10])
-			break
+	with open(filename[:-4]+'_preprocessed.csv','wb') as outfile:
+		writer = csv.writer(outfile, delimiter=',', quotechar='"')
+		with open(filename, 'rb') as csvfile:
+			rows = csv.reader(csvfile, delimiter=',', quotechar='"')
+			line = 0
+			for row in rows:
+				line += 1
+				if line == 1:
+					continue
+				writer.writerow([row[0], preprocessText(row[10])])
 
 
 if __name__ == '__main__':
