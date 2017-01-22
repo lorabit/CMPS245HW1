@@ -1,4 +1,5 @@
 import csv
+import nltk
 
 def unigram_feature(filename):
 
@@ -9,3 +10,7 @@ def unigram_tfidf(filename, threshold):
 
 def unigram_tfidf_normalization(filename, threshold):
 	return []
+
+
+if __name__ == '__main__':
+	unigram_feature(dataset_clinton)

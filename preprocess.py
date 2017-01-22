@@ -1,6 +1,10 @@
 from common import *
+from nltk.tokenize import TweetTokenizer
+import re
 
 def preprocess(filename):
+	tknzr = TweetTokenizer()
+
 	def preprocessText(text):
 		def removeHTML(text):
 			return text
@@ -11,11 +15,15 @@ def preprocess(filename):
 		def removeHashTag(text):
 			return text
 
+		print text
+		text = tknzr.tokenize(text)
+		print text
 		text = removeHTML(text)
 		text = removeURL(text)
 		text = removeAt(text)
 		text = removeHashTag(text)
-		return text
+		print text
+		return ' '.join(text)
 
 	with open(preprocessed_filename(filename),'wb') as outfile:
 		writer = csv_writer(outfile)
@@ -27,6 +35,7 @@ def preprocess(filename):
 				if line == 1:
 					continue
 				writer.writerow([row[0], preprocessText(row[10])])
+				break
 
 
 if __name__ == '__main__':
