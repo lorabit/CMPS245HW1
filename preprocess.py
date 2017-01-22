@@ -1,4 +1,4 @@
-import csv
+from common import *
 
 def preprocess(filename):
 	def preprocessText(text):
@@ -17,10 +17,10 @@ def preprocess(filename):
 		text = removeHashTag(text)
 		return text
 
-	with open(filename[:-4]+'_preprocessed.csv','wb') as outfile:
-		writer = csv.writer(outfile, delimiter=',', quotechar='"')
+	with open(preprocessed_filename(filename),'wb') as outfile:
+		writer = csv_writer(outfile)
 		with open(filename, 'rb') as csvfile:
-			rows = csv.reader(csvfile, delimiter=',', quotechar='"')
+			rows = csv_reader(csvfile)
 			line = 0
 			for row in rows:
 				line += 1
@@ -30,4 +30,4 @@ def preprocess(filename):
 
 
 if __name__ == '__main__':
-	preprocess('data/clinton-50k.csv')
+	preprocess(dataset_clinton)

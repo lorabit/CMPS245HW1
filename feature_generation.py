@@ -1,5 +1,7 @@
+import csv
+
 def unigram_feature(filename):
-	
+
 	return []
 
 def unigram_tfidf(filename, threshold):
