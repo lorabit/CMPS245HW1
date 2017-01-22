@@ -15,14 +15,14 @@ def preprocess(filename):
 		def removeHashTag(text):
 			return text
 
-		print text
+		# print text
 		text = tknzr.tokenize(text)
-		print text
+		# print text
 		text = removeHTML(text)
-		text = removeURL(text)
 		text = removeAt(text)
 		text = removeHashTag(text)
-		print text
+		# print text
+		text = removeURL(text)
 		return ' '.join(text)
 
 	with open(preprocessed_filename(filename),'wb') as outfile:
@@ -35,7 +35,6 @@ def preprocess(filename):
 				if line == 1:
 					continue
 				writer.writerow([row[0], preprocessText(row[10])])
-				break
 
 
 if __name__ == '__main__':
