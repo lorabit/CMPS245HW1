@@ -1,4 +1,3 @@
-import nltk
 import csv
 
 def preprocess(filename):
