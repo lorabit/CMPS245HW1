@@ -13,7 +13,7 @@ def preprocess(filename):
 		def removeURL(tokens):
 			new_tokens = []
 			for token in tokens:
-				if token[0:4] == 'http' or token[0:3] == 'www':
+				if token.lower()[0:4] == 'http' or token.lower()[0:3] == 'www' or token[0:2] == ':/':
 					continue
 
 				else:
@@ -35,31 +35,31 @@ def preprocess(filename):
 
 		def removeHashTag(tokens):
 			cnt = 0
+			new_tokens = []
 			for token in reversed(tokens):
 				if len(token) != 0 and token[0] == '#':
-					tokens.remove(token)
+					#tokens.remove(token)
+					cnt = cnt +1
 				else:
 					break
+			new_tokens = tokens[0:len(tokens)-cnt]
+			#print cnt
 
 
-			return tokens
+
+			return new_tokens
 
 		def removeNULL_Single(tokens):
 
+			new_tokens = []
 			for token in tokens:
-				if len(token) == 0:
-					print tokens
-					tokens.remove(token)
-				else:
+				if len(token) == 0 or len(token) == 1 or token[0:3] == '...':
 					continue
-			
-			for token_1 in tokens:
-				if len(token_1) == 1:
-					tokens.remove(token_1)
 				else:
-					continue
+					new_tokens.append(token)
 			
-			return tokens
+			
+			return new_tokens
 
 		def test_wrong(tokens):
 			for token in tokens:
@@ -75,13 +75,15 @@ def preprocess(filename):
 
 		# print text
 		tokens = tknzr.tokenize(text)
-		#print tokens
+		# print tokens
 		tokens = removeHTML(tokens)
-		while (test_wrong(tokens) == 1):
-			tokens = removeNULL_Single(tokens)
+		# print tokens
+		
+		tokens = removeNULL_Single(tokens)
 			
 		tokens = removeURL(tokens)
 		tokens = removeAt(tokens)
+		#print tokens
 		tokens = removeHashTag(tokens)
 		
 
@@ -89,6 +91,8 @@ def preprocess(filename):
 		# print tokens
 		# print tokens
 		return ' '.join(tokens)
+
+	# print preprocessText('[ #Luiis_3x ] This Might Be The Dumbest Line Of Inquiry At The Benghazi Hearing: EmbedContent(56... https://t.co/Ieu6bqE6bY [ #Luiis_3x ]')
 
 	with open(preprocessed_filename(filename),'wb') as outfile:
 		writer = csv_writer(outfile)
