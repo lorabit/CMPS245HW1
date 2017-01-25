@@ -14,11 +14,14 @@ def unigram_feature(filename):
 		for row in reader:
 			text = row[1]
 			tokens = tknzr.tokenize(text)
-			ret+=[[row[0],' '.join(tokens)]]
-			# for token in tokens:
-			# 	if token in wordDic:
-			# 		continue
-			# 	wordDic[token] = len(wordDic)
+			freq = dict()
+			for token in tokens:
+				if token in freq:
+					freq[token] += 1
+				else:
+					freq[token] = 1
+			features = [(token,value) for token,value in freq.items()]
+			ret+=[[row[0],features]]
 	return ret
 
 def tfidf(tokenized_dataset):
@@ -62,7 +65,13 @@ def tfidf(tokenized_dataset):
 		for token,freq in tf.items():
 			vtfidf = freq*idf[token]/n_tokens
 			selected += [(token,vtfidf)]
-		ret += [row[0], selected]
+			total += 1
+		ret += [[row[0], selected]]
+		if len(selected) == 0:
+			n_empty += 1
+	print "Avg. length of vectors: "+str(1.0*total/n_document)
+	print "# of empty vectors: "+str(n_empty)
+	print "# of words: " + str(len(idf))
 	return ret
 
 def unigram_tfidf(filename):
@@ -85,17 +94,17 @@ def unigram_tfidf(filename):
 	return ret
 
 def unigram_tfidf_normalization(filename):
-
 	tknzr = TweetTokenizer()
 	stopword = set(stopwords.words('english'))
 	stemmer = PorterStemmer()
-
 	def normalize(text):
 		ret = []
 		tokens = tknzr.tokenize(text)
 		tags = pos_tag(tokens)
 		for token,tag in tags:
 			token = ''.join([i for i in token if i.isalpha()])
+			if len(token) == 0:
+				continue
 			token = token.lower()
 			if tag in ['NNP','NNPS']:
 				continue
@@ -106,18 +115,29 @@ def unigram_tfidf_normalization(filename):
 		return ret
 	print "start tokenizing"
 	tokenized_dataset = []
+	n_document = 0
 	with open(preprocessed_filename(filename), 'rb') as csvfile:
 		reader = csv_reader(csvfile)
 		for row in reader:
 			text = row[1]
 			tokens = normalize(text)
 			tokenized_dataset += [[row[0],tokens]]
-	
+			n_document += 1
+			if n_document%10000 == 0:
+				print str(n_document) +" documents tokenized"
 	ret = tfidf(tokenized_dataset)
-
-	return []
-
+	return ret
 
 if __name__ == '__main__':
-	unigram_tfidf_normalization(dataset_clinton)
-	# unigram_tfidf(dataset_clinton,0.5)
+	dataset = dataset_clinton
+	feature_set_1 = unigram_feature(dataset)
+	print len(feature_set_1)
+	feature_set_2 = unigram_tfidf(dataset)
+	print len(feature_set_2)
+	feature_set_3 = unigram_tfidf_normalization(dataset)
+	print len(feature_set_3)
+	with open(result_filename(dataset),'wb') as outfile:
+		writer = csv_writer(outfile)
+		writer.writerow(['tweet id','feature set 1','feature set 2','feature set 3'])
+		for i in range(0,len(feature_set_1)):
+			writer.writerow([feature_set_1[i][0],fmt_feature_set(feature_set_1[i][1]),fmt_feature_set(feature_set_2[i][1]),fmt_feature_set(feature_set_3[i][1])])

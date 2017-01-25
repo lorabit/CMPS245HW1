@@ -11,3 +11,19 @@ def csv_reader(infile):
 
 def preprocessed_filename(filename):
 	return filename[:-4]+'_preprocessed.csv'
+
+def result_filename(filename):
+	return filename[:-4]+'_result.csv'
+
+def lsi_filename(filename):
+	return filename[:-4]+'_lsi.csv'
+
+def fmt_feature_set(features):
+	if len(features) == 0:
+		return ''
+	str_features = []
+	for a,b in features:
+		# print a
+		# str_features += str(a)
+		str_features += ['('+a+','+str(b)+')']
+	return ' '.join(str_features)
