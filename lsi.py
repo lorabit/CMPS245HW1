@@ -2,6 +2,7 @@ from common import *
 from feature_generation import unigram_tfidf_normalization
 from scipy.sparse import coo_matrix
 from sklearn.decomposition import TruncatedSVD
+from sklearn.utils.extmath import randomized_svd
 
 def lsi(dataset, n_topic):
 	mat = []
@@ -16,8 +17,13 @@ def lsi(dataset, n_topic):
 			col += [wordDic[token]]
 			data += [value]
 	sparse_matrix = coo_matrix((data, (row, col)), shape=(len(dataset), len(wordDic))).toarray()
+	# U, Sigma, VT = randomized_svd(sparse_matrix, n_components=n_topic,
+ #                                      n_iter=5,
+ #                                      random_state=None)
+	# return U
 	svd = TruncatedSVD(n_components=n_topic)
 	u = svd.fit_transform(sparse_matrix)
+	print svd.explained_variance_
 	return u
 
 if __name__ == '__main__':

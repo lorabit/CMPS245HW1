@@ -45,6 +45,7 @@ def process(dataset, k = 5, n_topic = 100):
 			if line == 1:
 				continue
 			original_data += [[row[0],row[10]]]
+	print sum(labels_fs4)/len(labels_fs4)
 	with open(result_filename(dataset),'wb') as outfile:
 		writer = csv_writer(outfile)
 		writer.writerow(['tweet id','text','label 1','label 2','label 3','label 4','feature set 1','feature set 2','feature set 3','feature set 4'])
@@ -55,4 +56,4 @@ def process(dataset, k = 5, n_topic = 100):
 			writer.writerow(row)
 
 if __name__ == '__main__':
-	process(dataset_clinton,10)
+	process(dataset_test,10,40)
