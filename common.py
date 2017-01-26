@@ -2,8 +2,7 @@ import csv
 
 dataset_clinton = 'data/clinton-50k.csv'
 dataset_trump = 'data/trump-50k.csv'
-
-n_dim_svd = 100
+dataset_test = 'data/test.csv'
 
 def csv_writer(outfile):
 	return csv.writer(outfile, delimiter=',', quotechar='"')

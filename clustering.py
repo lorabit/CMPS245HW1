@@ -4,7 +4,7 @@ from feature_generation import *
 
 def clustering(sparse,k):
 	print 'clustering...'
-	kmeans = KMeans(n_clusters = k,verbose = 1).fit(sparse)
+	kmeans = KMeans(n_clusters = k).fit(sparse)
 	return kmeans.labels_
 
 if __name__ == '__main__':

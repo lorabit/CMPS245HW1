@@ -3,7 +3,7 @@ from feature_generation import unigram_tfidf_normalization
 from scipy.sparse import coo_matrix
 from sklearn.decomposition import TruncatedSVD
 
-def lsi(dataset):
+def lsi(dataset, n_topic):
 	mat = []
 	wordDic = dict()
 	row,col,data = [],[],[]
@@ -16,13 +16,10 @@ def lsi(dataset):
 			col += [wordDic[token]]
 			data += [value]
 	sparse_matrix = coo_matrix((data, (row, col)), shape=(len(dataset), len(wordDic))).toarray()
-	svd = TruncatedSVD(n_components=n_dim_svd)
+	svd = TruncatedSVD(n_components=n_topic)
 	u = svd.fit_transform(sparse_matrix)
-	ret = []
-	for index in range(0,len(dataset)):
-		ret += [[dataset[index][0],u[index]]]
-	return ret
+	return u
 
 if __name__ == '__main__':
-	feature_set_3 = unigram_tfidf_normalization(dataset_clinton)
+	feature_set_3 = unigram_tfidf_normalization(dataset_test)
 	feature_set_4 = lsi(feature_set_3)
