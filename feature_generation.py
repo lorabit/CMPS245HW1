@@ -4,6 +4,7 @@ from nltk import pos_tag
 from math import log
 from nltk.corpus import stopwords
 from nltk.stem.porter import *
+from scipy.sparse import coo_matrix
 
 def unigram_feature(filename):
 	tknzr = TweetTokenizer()
@@ -128,16 +129,52 @@ def unigram_tfidf_normalization(filename):
 	ret = tfidf(tokenized_dataset)
 	return ret
 
+def words2vector(dataset):
+	ret = []
+	wordDic = dict()
+	for row in dataset:
+		tweet_id = row[0]
+		words = row[1]
+		for key,value in words:
+			if not (key in wordDic):
+				wordDic[key] = len(wordDic)
+	for row in dataset:
+		tweet_id = row[0]
+		words = row[1]
+		vector = [0 for i in range(0,len(wordDic))]
+		for key,value in words:
+			vector[wordDic[key]] = value
+		ret += [[tweet_id,vector]]
+	return ret
+
+def words2sparse(dataset):
+	wordDic = dict()
+	rows,cols,data = [],[],[]
+	for index in range(0,len(dataset)):
+		row = dataset[index]
+		tweet_id = row[0]
+		words = row[1]
+		for key,value in words:
+			if not (key in wordDic):
+				wordDic[key] = len(wordDic)
+			rows += [index]
+			cols += [wordDic[key]]
+			data += [value]
+	sparse_matrix = coo_matrix((data, (rows, cols)), shape=(len(dataset), len(wordDic)))
+	return sparse_matrix
+
 if __name__ == '__main__':
 	dataset = dataset_clinton
 	feature_set_1 = unigram_feature(dataset)
-	print len(feature_set_1)
-	feature_set_2 = unigram_tfidf(dataset)
-	print len(feature_set_2)
-	feature_set_3 = unigram_tfidf_normalization(dataset)
-	print len(feature_set_3)
-	with open(result_filename(dataset),'wb') as outfile:
-		writer = csv_writer(outfile)
-		writer.writerow(['tweet id','feature set 1','feature set 2','feature set 3'])
-		for i in range(0,len(feature_set_1)):
-			writer.writerow([feature_set_1[i][0],fmt_feature_set(feature_set_1[i][1]),fmt_feature_set(feature_set_2[i][1]),fmt_feature_set(feature_set_3[i][1])])
+	s = words2sparse(feature_set_1)
+	print s[0]
+	# print len(feature_set_1)
+	# feature_set_2 = unigram_tfidf(dataset)
+	# print len(feature_set_2)
+	# feature_set_3 = unigram_tfidf_normalization(dataset)
+	# print len(feature_set_3)
+	# with open(result_filename(dataset),'wb') as outfile:
+	# 	writer = csv_writer(outfile)
+	# 	writer.writerow(['tweet id','feature set 1','feature set 2','feature set 3'])
+	# 	for i in range(0,len(feature_set_1)):
+	# 		writer.writerow([feature_set_1[i][0],fmt_feature_set(feature_set_1[i][1]),fmt_feature_set(feature_set_2[i][1]),fmt_feature_set(feature_set_3[i][1])])
