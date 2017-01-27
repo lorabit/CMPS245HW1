@@ -3,11 +3,11 @@
 
 #preprocess.py
 
-This python document is aim to preprocess the text and so that the text is suitable for feature extraction and clustering. 
+This python file aims to preprocess the text and so that the text is suitable for feature extraction and clustering. 
 The preprocess() function in the preprocess.py consist of several functions to achieve the general specifications that aim to make the tweets tokenized and clean. 
 
 The removeURL() function remove the URL that start with 'www' or 'http' from the text.
-The removeAT() function remove the '@' character that at the begining of the name of the Twitter user name.
+The removeAT() function remove the '@' character that at the beginning of the name of the Twitter username.
 The removeHashTag() function remove the trailing hashtags.
 The removeNULL_Single() function remove the single character and NULL in the text such as the ',', '.', '!' and '?'
 
@@ -17,34 +17,34 @@ After the preprocess() function, a new csv file is writted and named with traili
 
 #feature_generation.py
 
-This python document will generate the feature sets as required.
+This python program will generate the feature sets as required.
 
-The unigram_feature() function is aim to generate the feature_set_1, which is unigrams features.
+The unigram_feature() function aims to generate the feature_set_1, which is unigrams features.
 The unigram_tfidf() function is aim to generate the feature_set_2, which is unigrams using TFIDF features.
 The unigram_tfidf_normalization() function is aim to generate the feature_set_3, which perform text normalization.
-The words2sparse() fucntion take the argument of one dataset and return the sparse matrix which could be used to do the clustering later.
+The words2sparse() function take the argument of one dataset and return the sparse matrix which could be used to do the clustering later.
 
 ####################################
 
 #lsi.py
 
-The lis() function will perform LSA on the feature set 3 and generate the new feature set called feature set 4.
+The lsi() function will perform LSA on the feature set 3 and generate the new feature set called feature set 4.
 
 ####################################
 
-clustering.py
+#clustering.py
 
-The clustering(sparse, k) take parameters sparse and k, it perform KMeans clustering on each feature set, each feature set is give via the sparse matrix to save to memory. We use the sklearn.cluster.KMeans to perform the clustering. The clustering() function return the clustered lable, which will be written into the new result csv file later in the 'Main.py'.
+The clustering(sparse, k) take parameters sparse and k, it performs KMeans clustering on the given feature set, each feature set given via sparse matrix to save to memory. We use the sklearn.cluster.KMeans to perform the clustering. The clustering() function return the clustered labels, which will be written into the new result CSV file later in the 'Main.py'.
 
 ####################################
 
-Main.py
+#Main.py
 
-The Main.py python document calls all the above task and generate a new csv file which consist of the Twitter ID and the text and the lables of different feature sets. The generated csv file is stored in the data directory named with trailing 'result.csv'.
+Main.py calls all the above tasks and generate a new CSV file which consists of the Twitter ID and the text and the labels of different feature sets. The generated CSV file is stored in the data directory named with trailing '_result.csv'.
 
-When you want to execute the project, all you need to do is scroll to the bottom of the code and,  you will see the process() function takes two parameters, the first one refers to which data you want to process, 'dataset_clinton' will then process the data of Hillary Clinton and 'dataset_trump' will process the data of Donald Trump. The second parameter k is the number of clusters to form. We tried k from 5 to 10 and we found that 10 has the best resulf for both clinton and trump dataset.
+When you want to execute the project, all you need to do is scrolling to the bottom of the code and,  you will see the process() function takes 3 parameters, the first one refers to which data you want to process, 'dataset_clinton' will then process the data of Hillary Clinton and 'dataset_trump' will process the data of Donald Trump. The second parameter k is the number of clusters while the last parameter is the number of latent semantic units. We tried k from 5 to 10. We found that there always be a major cluster containing over 60% tweets. As we increase k, we could have more topic separated from the previous major cluster with lower k. So we set k=10 in order to have more specific cluster instead of a super large one with few small clusters. For example, tweets from Clinton dataset that fall into cluster labeled 1 with the feature set 4 are all talking about reasons supporting Clinton and her supporters. 
 
-After execute the Main.py, you will get the 'clinton-50k_result.csv' in the data directory is you chose 'dataset_clinton' as the first parameters for process() fucntion, and it will work the same way to trump.
+After executing the Main.py, you will have two CSV generated with trailing filename '_result.csv'. 
 
 ####################################
 
