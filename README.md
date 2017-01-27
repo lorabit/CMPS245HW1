@@ -20,7 +20,7 @@ After the preprocess() function, a new csv file is writted and named with traili
 This python program will generate the feature sets as required.
 
 The unigram_feature() function aims to generate the feature_set_1, which is unigrams features.
-The unigram_tfidf() function is aim to generate the feature_set_2, which is unigrams using TFIDF features.
+The unigram_tfidf() function aims to generate the feature_set_2, which is unigrams using TFIDF features.
 The unigram_tfidf_normalization() function is aim to generate the feature_set_3, which perform text normalization.
 The words2sparse() function take the argument of one dataset and return the sparse matrix which could be used to do the clustering later.
 
@@ -48,4 +48,7 @@ After executing the Main.py, you will have two CSV generated with trailing filen
 
 ####################################
 
+# Additional contribution
+
+We use CMUTweetTagger as the wrapper of CMU's POS tagger tool. It is recommended on the tool's official homepage. During the usage with this wrapper, we are able to identify a major bug in this wrapper which misses results for empty lines. We forked this project on GitHub and created a pull request in order to fix this bug for other users. See https://github.com/ianozsvald/ark-tweet-nlp-python/pull/9 for more information.
 
