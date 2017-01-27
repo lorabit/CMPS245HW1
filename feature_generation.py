@@ -5,6 +5,7 @@ from math import log
 from nltk.corpus import stopwords
 from nltk.stem.porter import *
 from scipy.sparse import coo_matrix
+from CMUTweetTagger import *
 
 def unigram_feature(filename):
 	tknzr = TweetTokenizer()
@@ -95,20 +96,22 @@ def unigram_tfidf(filename):
 	return ret
 
 def unigram_tfidf_normalization(filename):
-	tknzr = TweetTokenizer()
+	success = check_script_is_present()
+	if not success:
+		print 'Error: CMU Tweet Tagger is absent.'
+		exit(-1)
+
 	stopword = set(stopwords.words('english'))
 	stemmer = PorterStemmer()
-	def normalize(text):
+	def normalize(tokens):
 		ret = []
-		tokens = tknzr.tokenize(text)
-		tags = pos_tag(tokens)
-		for token,tag in tags:
+		for token,tag,v in tokens:
+			if tag == '^':
+				continue
 			token = ''.join([i for i in token if i.isalpha()])
 			if len(token) == 0:
 				continue
 			token = token.lower()
-			if tag in ['NNP','NNPS']:
-				continue
 			if token in stopword:
 				continue
 			token = stemmer.stem(token)
@@ -117,15 +120,21 @@ def unigram_tfidf_normalization(filename):
 	print "start tokenizing"
 	tokenized_dataset = []
 	n_document = 0
+	sentences = []
+	tweet_ids = []
 	with open(preprocessed_filename(filename), 'rb') as csvfile:
 		reader = csv_reader(csvfile)
 		for row in reader:
+			tweet_ids += [row[0]]
 			text = row[1]
-			tokens = normalize(text)
-			tokenized_dataset += [[row[0],tokens]]
-			n_document += 1
-			if n_document%10000 == 0:
-				print str(n_document) +" documents tokenized"
+			sentences += [text]
+	sentences = runtagger_parse(sentences)
+	for index in range(0,len(sentences)):
+		tokens = normalize(sentences[index])
+		tokenized_dataset += [[tweet_ids[index],tokens]]
+		n_document += 1
+		if n_document%10000 == 0:
+			print str(n_document) +" documents tokenized"
 	ret = tfidf(tokenized_dataset)
 	return ret
 
@@ -164,10 +173,9 @@ def words2sparse(dataset):
 	return sparse_matrix
 
 if __name__ == '__main__':
-	dataset = dataset_clinton
-	feature_set_1 = unigram_feature(dataset)
+	dataset = dataset_test
+	feature_set_1 = unigram_tfidf_normalization(dataset)
 	s = words2sparse(feature_set_1)
-	print s[0]
 	# print len(feature_set_1)
 	# feature_set_2 = unigram_tfidf(dataset)
 	# print len(feature_set_2)

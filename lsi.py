@@ -23,7 +23,6 @@ def lsi(dataset, n_topic):
 	# return U
 	svd = TruncatedSVD(n_components=n_topic)
 	u = svd.fit_transform(sparse_matrix)
-	print svd.explained_variance_
 	return u
 
 if __name__ == '__main__':

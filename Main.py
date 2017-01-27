@@ -28,12 +28,15 @@ def process(dataset, k = 5, n_topic = 100):
 
 	print '##### Clustering with feature set 2'
 	labels_fs2 = clustering(feature_set_2_sparse,k)
+	print len(labels_fs2)
 
 	print '##### Clustering with feature set 3'
 	labels_fs3 = clustering(feature_set_3_sparse,k)
+	print len(labels_fs3)
 
 	print '##### Clustering with feature set 4'
 	labels_fs4 = clustering(feature_set_4_matrix,k)
+	print len(labels_fs4)
 
 	print '##### Generating result csv file ...'
 	original_data = []
@@ -56,4 +59,5 @@ def process(dataset, k = 5, n_topic = 100):
 			writer.writerow(row)
 
 if __name__ == '__main__':
-	process(dataset_test,10,40)
+	process(dataset_clinton,10,20)
+	process(dataset_trump,10,20)
